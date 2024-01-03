@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Test
 class HelloTest {
 
     @Test
-    fun `hello test no optional parameters`() {
+    fun `hello route with no optional parameters returns generic greeting`() {
         assertEquals(Response(OK).body("Hello"), app(Request(GET, "/hello")))
     }
 
     @Test
-    fun `hello test with name parameter`() {
+    fun `hello route with name parameter returns personalised greeting `() {
         assertEquals(Response(OK).body("Hello Margot"), app(Request(GET, "/hello?name=Margot")))
     }
     @Test
-    fun `optional parameter throws BAD REQUEST if not string`() {
+    fun `hello route optional name parameter throws BAD REQUEST if not string`() {
         assertEquals(Response(Status.BAD_REQUEST).body("Invalid name"), app(Request(GET, "/hello?name=123")))
     }
 
