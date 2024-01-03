@@ -20,7 +20,7 @@ class HelloTest {
         assertEquals(Response(OK).body("Hello Margot"), app(Request(GET, "/hello?name=Margot")))
     }
     @Test
-    fun `hello route optional name parameter throws BAD REQUEST if not string`() {
+    fun `hello route optional name parameter throws BAD REQUEST if not string of alphabetical characters`() {
         assertEquals(Response(Status.BAD_REQUEST).body("Invalid name"), app(Request(GET, "/hello?name=123")))
     }
 
