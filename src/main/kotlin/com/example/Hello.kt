@@ -40,12 +40,9 @@ val app: HttpHandler = routes(
     "/echo_headers" bind GET to {req: Request ->
         val headers = req.headers
         val headersAsList = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
-
-        println("these are HEADERS $headers")
         Response(OK).body("$headersAsList")
     }
 )
-
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
 
