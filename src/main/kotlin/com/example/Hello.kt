@@ -1,12 +1,9 @@
 package com.example
 
-import org.http4k.core.HttpHandler
+import org.http4k.core.*
 import org.http4k.core.Method.GET
-import org.http4k.core.Request
-import org.http4k.core.Response
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
-import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters.PrintRequest
 import org.http4k.routing.bind
 import org.http4k.routing.path
@@ -37,8 +34,17 @@ val app: HttpHandler = routes(
         } else {
             Response(BAD_REQUEST).body("Invalid name")
         }
+    }
+    ,
 
-    })
+    "/echo_headers" bind GET to {req: Request ->
+        val headers = req.headers
+        val headersAsList = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
+
+        println("these are HEADERS $headers")
+        Response(OK).body("$headersAsList")
+    }
+)
 
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
