@@ -17,9 +17,8 @@ import org.http4k.server.asServer
 val app: HttpHandler = routes(
     "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
 
-//{lang:[a-zA-Z-]}
-        val lang = req.path("lang") ?: "en-US"
-        val name = req.query("name") ?: ""
+        val lang: String = req.path("lang") ?: "en-US"
+        val name: String = req.query("name") ?: ""
 
         val greeting = when (lang) {
             "en-US" -> "Hello"
@@ -30,15 +29,16 @@ val app: HttpHandler = routes(
             else -> "Hello"
         }
 
-
-        if (name.matches(Regex("[a-zA-Z]+")) || name == "") {
+        if (name == "") {
+            Response(OK).body("$greeting")
+        } else if (name.matches(Regex("[a-zA-Z]+")) || name == "") {
             // Name is a string of characters (alphabetic) or not declared
             Response(OK).body("$greeting $name")
         } else {
             Response(BAD_REQUEST).body("Invalid name")
         }
-    }
-)
+
+    })
 
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
