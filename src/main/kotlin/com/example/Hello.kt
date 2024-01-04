@@ -31,7 +31,7 @@ val app: HttpHandler = routes(
 
         if (name == "") {
             Response(OK).body("$greeting")
-        } else if (name.matches(Regex("[a-zA-Z]+")) || name == "") {
+        } else if (name.matches(Regex("[a-zA-Z]+"))) {
             // Name is a string of characters (alphabetic) or not declared
             Response(OK).body("$greeting $name")
         } else {

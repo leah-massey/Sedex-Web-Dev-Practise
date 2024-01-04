@@ -32,6 +32,11 @@ class HelloTest {
         assertEquals(Response(OK).body("Good day Jeeves"), app(Request(GET, "en-GB/hello?name=Jeeves")))
     }
 
+    @Test
+    fun `an unsupported language receives a greeting in English`() {
+        assertEquals(Response(OK).body("Hello Amelie"), app(Request(GET, "ru-RU/hello?name=Amelie")))
+    }
+
     // unidentified language
     // good language bad name
     // invalid lang?
