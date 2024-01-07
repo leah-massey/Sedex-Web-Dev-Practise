@@ -23,7 +23,7 @@ val app: HttpHandler = routes(
     "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
 
         val lang: String = req.path("lang") ?: "en-US"
-        val name: String = req.query("name") ?: "" //  query will look something like this: ?name=Jane
+        val name: String? = req.query("name") //  query will look something like this: ?name=Jane
 
         val greeting = when (lang) {
             "en-US" -> "Hello"
@@ -34,20 +34,21 @@ val app: HttpHandler = routes(
             else -> "Hello"
         }
 
-        if (name == "") {
+        if (name == null) {
             // No name is declared
             Response(OK).body("$greeting")
         } else if (name.matches(Regex("[a-zA-Z]+"))) {
             // Name is a string of alphabetic characters
             Response(OK).body("$greeting $name")
         } else {
-            // Name is a number or symbol
+            // Name is incorrectly formatted eg - a number or symbol
             Response(BAD_REQUEST).body("Invalid name")
         }
     }
     ,
 
     "/echo_headers" bind GET to {req: Request ->
+        val asResponseHeader = req.query("as_response_headers_with_prefix") ?: ""
 
         val headers: Headers = req.headers
 
