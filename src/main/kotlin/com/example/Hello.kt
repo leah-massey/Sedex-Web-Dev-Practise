@@ -23,7 +23,7 @@ val app: HttpHandler = routes(
     "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
 
         val lang: String = req.path("lang") ?: "en-US"
-        val name: String = req.query("name") ?: ""
+        val name: String = req.query("name") ?: "" //  query will look something like this: ?name=Jane
 
         val greeting = when (lang) {
             "en-US" -> "Hello"
@@ -35,11 +35,13 @@ val app: HttpHandler = routes(
         }
 
         if (name == "") {
+            // No name is declared
             Response(OK).body("$greeting")
         } else if (name.matches(Regex("[a-zA-Z]+"))) {
-            // Name is a string of characters (alphabetic) or not declared
+            // Name is a string of alphabetic characters
             Response(OK).body("$greeting $name")
         } else {
+            // Name is a number or symbol
             Response(BAD_REQUEST).body("Invalid name")
         }
     }
@@ -47,25 +49,19 @@ val app: HttpHandler = routes(
 
     "/echo_headers" bind GET to {req: Request ->
 
-        val headers = req.headers
+        val headers: Headers = req.headers
 
-        val headersAsList = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
+        val headersAsStringList: String = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
         val headersAsJson: JsonNode = headers.toMap().asJsonObject()
 
-        val anyMediaType  = "*/*"
-        val jsonType = "json"
+        val value = headers.find { it.first == "Accept" }?.second // this returns the value part of the accept key
 
-        val value = headers.find { it.first == "Accept" }?.second
-
-        if (value != null && jsonType in value) {
-            println("Value supports json responses")
-            Response(OK).body("this is JSON format: $headersAsJson")
-        } else if (value != null && anyMediaType in value) {
-            println("Value supports all media type responses")
-            Response(OK).body("this is JSON format: $headersAsJson")
+        if ( value != null && ("json" in value || "*/*" in value)) {
+            // json responses supported
+            Response(OK).body("$headersAsJson")
         } else {
-            println("Value does not support json responses")
-            Response(OK).body(" this is list format: $headersAsList")
+            // json responses not supported
+            Response(OK).body(headersAsStringList)
         }
     }
 )

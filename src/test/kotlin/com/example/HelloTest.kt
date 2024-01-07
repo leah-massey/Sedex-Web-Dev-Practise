@@ -37,4 +37,6 @@ class HelloTest {
         assertEquals(Response(OK).body("Hello Amelie"), app(Request(GET, "ru-RU/hello?name=Amelie")))
     }
 
+    //test language not of correct format - eg FR-fr or number or frFR
+
 }
