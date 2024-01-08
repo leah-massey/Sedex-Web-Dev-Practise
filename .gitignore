@@ -5,6 +5,8 @@ buildOutputCleanup.lock
 executionHistory.lock
 fileHashes.lock
 
+file-system.probe
+
 local.properties
 
 *.bin
@@ -16,3 +18,4 @@ misc.xml
 kotlinc.xml
 jarRepositories.xml
 compiler.xml
+
