@@ -45,7 +45,6 @@ val app: HttpHandler = routes(
         }
     }
     ,
-
     "/echo_headers" bind GET to {req: Request ->
 
         val headers: Headers = req.headers
@@ -53,18 +52,15 @@ val app: HttpHandler = routes(
         val headersAsJson: JsonNode = headers.toMap().asJsonObject()
         val prefix: String? = req.query("as_response_headers_with_prefix")
 
-        val mutableHeaders: MutableMap<String, String?> = headers.toMap().toMutableMap() // get headers to map form
-        val prefixedHeaders: Map<String, String?> = mutableHeaders.mapKeys { "${prefix}${it.key}" } // update headers in map form
-        val prefixedResponseHeaders: Headers = prefixedHeaders.entries.map{it.key to it.value} // turn back to headers
+        val prefixedResponseHeaders: Headers = headers.toMap().mapKeys { "${prefix}${it.key}" }.entries.map{it.key to it.value} // get headers to map form and update with prefix then turn back to header
 
         if (prefix !== null ) {
             // respond with the prefixed response headers
-            Response(OK).body(prefixedResponseHeaders.map{"${it.first}: ${it.second}"}.joinToString("\n"))
-                .headers(prefixedResponseHeaders)
+            Response(OK).headers(prefixedResponseHeaders)
         } else {
             // work out if client supports json responses and return body accordingly
-            val value = headers.find { it.first == "Accept" }?.second // this returns the value part of the accept key or null
-            if ( value != null && ("json" in value || "*/*" in value)) {
+            val acceptHeaderValue: String? = headers.find { it.first == "Accept" }?.second // this returns the value part of the accept key or null
+            if ( acceptHeaderValue != null && ("json" in acceptHeaderValue || "*/*" in acceptHeaderValue)) {
                 // json responses supported
                 Response(OK).body("$headersAsJson")
             } else {
