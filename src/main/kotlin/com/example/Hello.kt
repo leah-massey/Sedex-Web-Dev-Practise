@@ -18,7 +18,6 @@ import org.http4k.server.asServer
 import org.http4k.format.Jackson.auto
 
 
-
 val app: HttpHandler = routes(
     "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
 
@@ -48,21 +47,30 @@ val app: HttpHandler = routes(
     ,
 
     "/echo_headers" bind GET to {req: Request ->
-        val asResponseHeader = req.query("as_response_headers_with_prefix") ?: ""
 
         val headers: Headers = req.headers
-
         val headersAsStringList: String = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
         val headersAsJson: JsonNode = headers.toMap().asJsonObject()
+        val prefix: String? = req.query("as_response_headers_with_prefix")
 
-        val value = headers.find { it.first == "Accept" }?.second // this returns the value part of the accept key
+        val mutableHeaders: MutableMap<String, String?> = headers.toMap().toMutableMap() // get headers to map form
+        val prefixedHeaders: Map<String, String?> = mutableHeaders.mapKeys { "${prefix}${it.key}" } // update headers in map form
+        val prefixedResponseHeaders: Headers = prefixedHeaders.entries.map{it.key to it.value} // turn back to headers
 
-        if ( value != null && ("json" in value || "*/*" in value)) {
-            // json responses supported
-            Response(OK).body("$headersAsJson")
+        if (prefix !== null ) {
+            // respond with the prefixed response headers
+            Response(OK).body(prefixedResponseHeaders.map{"${it.first}: ${it.second}"}.joinToString("\n"))
+                .headers(prefixedResponseHeaders)
         } else {
-            // json responses not supported
-            Response(OK).body(headersAsStringList)
+            // work out if client supports json responses and return body accordingly
+            val value = headers.find { it.first == "Accept" }?.second // this returns the value part of the accept key or null
+            if ( value != null && ("json" in value || "*/*" in value)) {
+                // json responses supported
+                Response(OK).body("$headersAsJson")
+            } else {
+                // json responses not supported
+                Response(OK).body(headersAsStringList)
+            }
         }
     }
 )
