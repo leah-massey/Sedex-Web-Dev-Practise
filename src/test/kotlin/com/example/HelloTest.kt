@@ -65,13 +65,37 @@ class HelloTest {
                 "Host" to "localhost:3000".asJsonValue()
             ).asJsonObject().toString()
 
-            val underTest = app(Request(Method.GET, "/echo_headers")
+            val actual = app(
+                Request(Method.GET, "/echo_headers")
+                    .header("Accept-encoding", "gzip")
+                    .header("Accept", "*/*")
+                    .header("Connection", "keep-alive")
+                    .header("Host", "localhost:3000")
+            ).body.toString()
+
+            assertEquals(expected, actual)
+        }
+
+        @Test
+        fun `when client does not support json responses, header is returned in the body a list in string format`() {
+            val expected: String = listOf(
+                "Accept-encoding: gzip",
+                "Accept: text",
+                "Connection: keep-alive",
+                "Host: localhost:3000"
+            ).joinToString("\n")
+
+            val actual = app(Request(Method.GET, "/echo_headers")
                 .header("Accept-encoding", "gzip")
-                .header("Accept", "*/*")
+                .header("Accept", "text")
                 .header("Connection","keep-alive")
                 .header("Host","localhost:3000")
-                ).body.toString()
+            ).body.toString()
+
+            assertEquals(expected, actual)
+
         }
+
 
 
     }
