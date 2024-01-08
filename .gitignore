@@ -1,0 +1,6 @@
+
+# Gradle
+/build/
+buildOutputCleanup.lock
+executionHistory.lock
+fileHashes.lock
