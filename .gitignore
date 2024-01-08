@@ -4,3 +4,15 @@
 buildOutputCleanup.lock
 executionHistory.lock
 fileHashes.lock
+
+local.properties
+
+*.bin
+
+# IDE specific xml files
+vcs.xml
+gradle.xml
+misc.xml
+kotlinc.xml
+jarRepositories.xml
+compiler.xml
