@@ -19,12 +19,15 @@ import org.http4k.format.Jackson.auto
 
 
 val app: HttpHandler = routes(
-    "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
-
-        val lang: String = req.path("lang") ?: "en-US"
+    "/hello" bind GET to { req: Request ->
+//    "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
+//        val lang: String = req.path("lang") ?: "en-US"
         val name: String? = req.query("name") //  query will look something like this: ?name=Jane
 
-        val greeting = when (lang) {
+        val headers: Headers = req.headers
+        val acceptLanguageValue = headers.find{it.first == "Accept-language"}?.second?.substringBefore(",") ?: "en-US"
+
+        val greeting = when (acceptLanguageValue) {
             "en-US" -> "Hello"
             "fr-FR" -> "Bonjour"
             "en-AU" -> "G'day"

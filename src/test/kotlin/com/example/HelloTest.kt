@@ -1,10 +1,13 @@
 package com.example
 
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.Status.Companion.OK
+import org.http4k.format.Jackson.asJsonObject
+import org.http4k.format.Jackson.asJsonValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -50,6 +53,27 @@ class HelloTest {
         fun `returns 200-OK on the root URI on a valid request`() {
             assertEquals(Response(OK), app(Request(GET, "/echo_headers")))
         }
+
+        // response body is string version of request header if client does not accept json responses
+        // response body is json version of request headers if client supports json responses
+        @Test
+        fun `when client supports json responses, header is returned in the body as json`() {
+            val expected: String = listOf(
+                "Accept-encoding" to "gzip".asJsonValue(),
+                "Accept" to "*/*".asJsonValue(),
+                "Connection" to "keep-alive".asJsonValue(),
+                "Host" to "localhost:3000".asJsonValue()
+            ).asJsonObject().toString()
+
+            val underTest = app(Request(Method.GET, "/echo_headers")
+                .header("Accept-encoding", "gzip")
+                .header("Accept", "*/*")
+                .header("Connection","keep-alive")
+                .header("Host","localhost:3000")
+                ).body.toString()
+        }
+
+
     }
 
 
