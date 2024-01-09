@@ -38,7 +38,14 @@ class HelloTest {
                 .header("Accept-language", "fr-FR"))
             assertThat(Response(OK), hasStatus(OK))
             assertThat(response, hasBody("Bonjour Margot"))
+        }
 
+        @Test
+        fun `hello endpoint returns a greeting in the first language listed in the Accept-language header`() {
+            val response = app(Request(GET, "/hello?name=Margot")
+                .header("Accept-language", "fr-FR, en-GB"))
+            assertThat(Response(OK), hasStatus(OK))
+            assertThat(response, hasBody("Bonjour Margot"))
         }
 
 //        👇🏻 test no longer applicable to project requirements
