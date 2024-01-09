@@ -156,24 +156,31 @@ class HelloTest {
     inner class ClientTest {
 
         @Test
-        fun `hello function with no parameters, returns 'Hello'`() {
+        fun `hello method with no parameters, returns 'Hello'`() {
             val client = Client(app)
             val response = client.hello()
             assertThat(response, hasBody("Hello"))
         }
 
         @Test
-        fun `hello function with name parameter, returns 'Hello $name'`() {
+        fun `hello method with name parameter, returns 'Hello $name'`() {
             val client = Client(app)
             val response = client.hello(name = "Kimmy")
             assertThat(response, hasBody("Hello Kimmy"))
         }
 
         @Test
-        fun `hello function with recognised language parameter, returns greeting in recognised language`() {
+        fun `hello method with recognised language parameter, returns greeting in recognised language`() {
             val client = Client(app)
             val response = client.hello(name = "Kimmy", language = "fr-FR")
             assertThat(response, hasBody("Bonjour Kimmy"))
+        }
+
+        @Test
+        fun `hello method with unrecognised language parameter, returns greeting in en-US`() {
+            val client = Client(app)
+            val response = client.hello(name = "Kimmy", language = "fr-F")
+            assertThat(response, hasBody("Hello Kimmy"))
         }
     }
 
