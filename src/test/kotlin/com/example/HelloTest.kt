@@ -23,13 +23,22 @@ class HelloTest {
     @Nested
     inner class HelloPathTests {
         @Test
-        fun `hello route with no optional parameters returns generic greeting`() {
+        fun `hello endpoint with no optional parameters returns generic greeting`() {
             assertEquals(Response(OK).body("Hello"), app(Request(GET, "/hello")))
         }
 
         @Test
-        fun `hello route with name parameter returns personalised greeting `() {
+        fun `hello endpoint with name parameter returns personalised greeting `() {
             assertEquals(Response(OK).body("Hello Margot"), app(Request(GET, "/hello?name=Margot")))
+        }
+
+        @Test
+        fun `hello endpoint returns a greeting in the appropriate language`() {
+            val response = app(Request(GET, "/hello?name=Margot")
+                .header("Accept-language", "fr-FR"))
+            assertThat(Response(OK), hasStatus(OK))
+            assertThat(response, hasBody("Bonjour Margot"))
+
         }
 
 //        👇🏻 test no longer applicable to project requirements
@@ -102,9 +111,6 @@ class HelloTest {
 
         }
 
-        // no body in response
-        // response headers all start with prefix
-        // response headers are the same as request headers
 
         @Test
         fun `when query parameter 'as_response_headers_with_prefix' is used, no body in Response`() {
