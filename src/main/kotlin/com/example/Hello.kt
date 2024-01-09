@@ -2,6 +2,7 @@ package com.example
 
 import com.fasterxml.jackson.databind.JsonNode
 import netscape.javascript.JSObject
+import org.http4k.client.JavaHttpClient
 import org.http4k.core.*
 import org.http4k.core.Method.GET
 import org.http4k.core.Status.Companion.BAD_REQUEST
@@ -35,7 +36,7 @@ val app: HttpHandler = routes(
 
         if (name == null) {
             // No name is declared
-            Response(OK).body("$greeting")
+            Response(OK).body(greeting)
         } else if (name.matches(Regex("[a-zA-Z]+"))) {
             // Name is a string of alphabetic characters
             Response(OK).body("$greeting $name")
@@ -43,8 +44,7 @@ val app: HttpHandler = routes(
             // Name is incorrectly formatted eg - a number or symbol
             Response(BAD_REQUEST).body("Invalid name")
         }
-    }
-    ,
+    },
     "/echo_headers" bind GET to {req: Request ->
         val headers: Headers = req.headers
         val headersAsStringList: String = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
@@ -69,10 +69,19 @@ val app: HttpHandler = routes(
         }
     }
 )
+
+class Client(app: HttpHandler) {
+    fun hello(name: String? = null, language: String = "en-US") = app(Request(GET, "/hello").query("name", name))
+
+
+}
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
-
     val server = printingApp.asServer(SunHttp(3000)).start()
+    val client = Client(app)
+//     client.hello()
+    println(client.hello(name="Bruce"))
+
 
     println("Server started on " + server.port())
 }

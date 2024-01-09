@@ -85,7 +85,6 @@ class HelloTest {
         fun `echo_headers endpoint returns 200-OK on the root URI on a valid request`() {
             assertEquals(Response(OK), app(Request(GET, "/echo_headers")))
         }
-
         @Test
         fun `echo_headers endpoint returns request header in json format in the response body when client supports json responses`() {
             val expected: String = listOf( // could be written in json
@@ -151,7 +150,17 @@ class HelloTest {
             assertThat(response, hasHeader("X-Echo-Connection","keep-alive"))
         }
 
+    }
 
+    @Nested
+    inner class ClientTest {
+
+        @Test
+        fun `hello function with no parameters, returns 'Hello'`() {
+            val client = Client(app)
+            val response = client.hello()
+            assertThat(response, hasBody("Hello"))
+        }
     }
 
 
