@@ -11,6 +11,10 @@ import org.http4k.format.Jackson.asJsonValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.equalTo
+import org.http4k.hamkrest.hasBody
+import org.http4k.hamkrest.hasStatus
 
 class HelloTest {
 
@@ -54,8 +58,6 @@ class HelloTest {
             assertEquals(Response(OK), app(Request(GET, "/echo_headers")))
         }
 
-        // response body is string version of request header if client does not accept json responses
-        // response body is json version of request headers if client supports json responses
         @Test
         fun `when client supports json responses, header is returned in the body as json`() {
             val expected: String = listOf(
@@ -94,6 +96,19 @@ class HelloTest {
 
             assertEquals(expected, actual)
 
+        }
+
+        // no body in response
+        // response headers all start with prefix
+        // response headers are the same as request headers
+
+        @Test
+        fun `when a query parameter "?as_response_headers_with_prefix=X-Echo-" is added, no body in Response`() {
+            val expected: String = ""
+            val response = app(Request(Method.GET,"/echo_headers?as_response_headers_with_prefix=X-Echo-" ))
+            val actual: String = response.body.toString()
+
+            assertEquals(expected, actual)
         }
 
 
