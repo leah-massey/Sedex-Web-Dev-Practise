@@ -71,7 +71,7 @@ val app: HttpHandler = routes(
 )
 
 class Client(app: HttpHandler) {
-    fun hello(name: String? = null, language: String = "en-US") = app(Request(GET, "/hello").query("name", name))
+    fun hello(name: String? = null, language: String = "en-US") = app(Request(GET, "/hello").query("name", name).header("Accept-language", language))
 
 
 }

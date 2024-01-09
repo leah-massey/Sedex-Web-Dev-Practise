@@ -168,6 +168,13 @@ class HelloTest {
             val response = client.hello(name = "Kimmy")
             assertThat(response, hasBody("Hello Kimmy"))
         }
+
+        @Test
+        fun `hello function with recognised language parameter, returns greeting in recognised language`() {
+            val client = Client(app)
+            val response = client.hello(name = "Kimmy", language = "fr-FR")
+            assertThat(response, hasBody("Bonjour Kimmy"))
+        }
     }
 
 
