@@ -161,6 +161,13 @@ class HelloTest {
             val response = client.hello()
             assertThat(response, hasBody("Hello"))
         }
+
+        @Test
+        fun `hello function with name parameter, returns 'Hello $name'`() {
+            val client = Client(app)
+            val response = client.hello(name = "Kimmy")
+            assertThat(response, hasBody("Hello Kimmy"))
+        }
     }
 
 
