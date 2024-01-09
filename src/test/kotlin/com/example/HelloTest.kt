@@ -48,6 +48,14 @@ class HelloTest {
             assertThat(response, hasBody("Bonjour Margot"))
         }
 
+        @Test
+        fun `hello endpoint with an unrecognised first listed language returns a greeting en-US`() {
+            val response = app(Request(GET, "/hello?name=Margot")
+                .header("Accept-language", "jb-K, en-GB"))
+            assertThat(Response(OK), hasStatus(OK))
+            assertThat(response, hasBody("Hello Margot"))
+        }
+
 //        👇🏻 test no longer applicable to project requirements
 //        @Test
 //        fun `hello route optional name parameter throws BAD REQUEST if not string of alphabetical characters`() {
