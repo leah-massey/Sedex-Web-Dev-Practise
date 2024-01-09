@@ -82,12 +82,12 @@ class HelloTest {
     @Nested
     inner class Echo_HeadersPathTest {
         @Test
-        fun `returns 200-OK on the root URI on a valid request`() {
+        fun `echo_headers endpoint returns 200-OK on the root URI on a valid request`() {
             assertEquals(Response(OK), app(Request(GET, "/echo_headers")))
         }
 
         @Test
-        fun `when client supports json responses, header is returned in the body as json`() {
+        fun `echo_headers endpoint returns request header in json format in the response body when client supports json responses`() {
             val expected: String = listOf( // could be written in json
                 "Accept-encoding" to "gzip".asJsonValue(),
                 "Accept" to "*/*".asJsonValue(),
@@ -107,7 +107,7 @@ class HelloTest {
         }
 
         @Test
-        fun `when client does not support json responses, header is returned in the body a list in string format`() {
+        fun `echo_headers endpoint returns request header in list format in the response body when client does not support json responses`() {
             val expected: String = listOf(
                 "Accept-encoding: gzip",
                 "Accept: text",
@@ -126,9 +126,8 @@ class HelloTest {
 
         }
 
-
         @Test
-        fun `when query parameter 'as_response_headers_with_prefix' is used, no body in Response`() {
+        fun `echo_headers endpoint with query parameter 'as_response_headers_with_prefix' has no content in response body`() {
             val expected: String = ""
             val response = app(Request(Method.GET,"/echo_headers?as_response_headers_with_prefix=X-Echo-" ))
             val actual: String = response.body.toString()
@@ -137,7 +136,7 @@ class HelloTest {
         }
 
         @Test
-        fun `when query parameter 'as_response_headers_with_prefix' is 'X-Echo-', 'X-Echo-' is added as a prefix to each header key`() {
+        fun `echo_headers endpoint with query parameter 'as_response_headers_with_prefix=X-Echo' prefixes the 'X-Echo' to each response header key`() {
 
             val response = app(Request(Method.GET,"/echo_headers?as_response_headers_with_prefix=X-Echo-" )
                 .header("Host","localhost:3000")
@@ -151,7 +150,6 @@ class HelloTest {
             assertThat(response, hasHeader("X-Echo-Accept","text"))
             assertThat(response, hasHeader("X-Echo-Connection","keep-alive"))
         }
-
 
 
     }
