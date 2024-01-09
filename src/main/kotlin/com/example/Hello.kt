@@ -20,8 +20,6 @@ import org.http4k.format.Jackson.auto
 
 val app: HttpHandler = routes(
     "/hello" bind GET to { req: Request ->
-//    "{lang:[a-zA-Z-]+}/hello" bind GET to { req: Request ->
-//        val lang: String = req.path("lang") ?: "en-US"
         val name: String? = req.query("name") //  query will look something like this: ?name=Jane
         val headers: Headers = req.headers
         val acceptLanguageValue = headers.find{it.first == "Accept-language"}?.second?.substringBefore(",") ?: "en-US"
@@ -48,7 +46,6 @@ val app: HttpHandler = routes(
     }
     ,
     "/echo_headers" bind GET to {req: Request ->
-
         val headers: Headers = req.headers
         val headersAsStringList: String = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
         val headersAsJson: JsonNode = headers.toMap().asJsonObject()
