@@ -30,12 +30,12 @@ class HelloClientTest {
             assertEquals(expected, actual)
         }
 
-//        @Test
-//        fun `hello method with unrecognised language parameter, returns greeting in en-US`() {
-//            val client = HelloClient(client)
-//            val response = client.sayHello(name = "Kimmy", language = "fr-F")
-//            assertThat(response, hasBody("Hello Kimmy"))
-//        }
+        @Test
+        fun `hello method with unrecognised language parameter, returns greeting in en-US`() {
+            val expected: String = "Hello Kimmy"
+            val actual: String = testClient.sayHello(name="Kimmy", language="fr-F")
+            assertEquals(expected, actual)
+        }
 
 
 
