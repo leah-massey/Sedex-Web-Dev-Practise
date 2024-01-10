@@ -22,14 +22,14 @@ class HelloClientTest {
             val actual: String = testClient.sayHello(name="Kimmy")
             assertEquals(expected, actual)
         }
-//
-//        @Test
-//        fun `hello method with recognised language parameter, returns greeting in recognised language`() {
-//            val client = HelloClient(client)
-//            val response = client.sayHello(name = "Kimmy", language = "fr-FR")
-//            assertThat(response, hasBody("Bonjour Kimmy"))
-//        }
-//
+
+        @Test
+        fun `hello method with recognised language parameter, returns greeting in recognised language`() {
+            val expected: String = "Bonjour Kimmy"
+            val actual: String = testClient.sayHello(name="Kimmy", language="fr-FR")
+            assertEquals(expected, actual)
+        }
+
 //        @Test
 //        fun `hello method with unrecognised language parameter, returns greeting in en-US`() {
 //            val client = HelloClient(client)
