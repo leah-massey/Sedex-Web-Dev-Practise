@@ -4,21 +4,18 @@ import org.http4k.core.Method
 import org.http4k.core.Method.GET
 import org.http4k.core.Request
 import org.http4k.core.Response
-import org.http4k.core.Status
 import org.http4k.core.Status.Companion.OK
 import org.http4k.format.Jackson.asJsonObject
 import org.http4k.format.Jackson.asJsonValue
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import org.http4k.hamkrest.hasHeader
-import com.natpryce.hamkrest.equalTo
 import org.http4k.hamkrest.hasBody
 import org.http4k.hamkrest.hasStatus
 
-class HelloTest {
+class HelloServerTest {
 
     @Nested
     inner class HelloPathTests {
@@ -152,37 +149,8 @@ class HelloTest {
 
     }
 
-    @Nested
-    inner class ClientTest {
 
-        @Test
-        fun `hello method with no parameters, returns 'Hello'`() {
-            val client = Client(app)
-            val response = client.hello()
-            assertThat(response, hasBody("Hello"))
-        }
 
-        @Test
-        fun `hello method with name parameter, returns 'Hello $name'`() {
-            val client = Client(app)
-            val response = client.hello(name = "Kimmy")
-            assertThat(response, hasBody("Hello Kimmy"))
-        }
-
-        @Test
-        fun `hello method with recognised language parameter, returns greeting in recognised language`() {
-            val client = Client(app)
-            val response = client.hello(name = "Kimmy", language = "fr-FR")
-            assertThat(response, hasBody("Bonjour Kimmy"))
-        }
-
-        @Test
-        fun `hello method with unrecognised language parameter, returns greeting in en-US`() {
-            val client = Client(app)
-            val response = client.hello(name = "Kimmy", language = "fr-F")
-            assertThat(response, hasBody("Hello Kimmy"))
-        }
-    }
 
 
 

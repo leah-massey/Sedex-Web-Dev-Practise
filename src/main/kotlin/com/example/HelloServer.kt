@@ -1,22 +1,16 @@
 package com.example
 
 import com.fasterxml.jackson.databind.JsonNode
-import netscape.javascript.JSObject
-import org.http4k.client.JavaHttpClient
 import org.http4k.core.*
 import org.http4k.core.Method.GET
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.OK
 import org.http4k.filter.DebuggingFilters.PrintRequest
-import org.http4k.format.Jackson.asJsonArray
 import org.http4k.format.Jackson.asJsonObject
-import org.http4k.format.Jackson.asJsonValue
 import org.http4k.routing.bind
-import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
-import org.http4k.format.Jackson.auto
 
 
 val app: HttpHandler = routes(
@@ -70,17 +64,14 @@ val app: HttpHandler = routes(
     }
 )
 
-class Client(app: HttpHandler) {
-    fun hello(name: String? = null, language: String = "en-US") = app(Request(GET, "/hello").query("name", name).header("Accept-language", language))
 
-
-}
 fun main() {
     val printingApp: HttpHandler = PrintRequest().then(app)
-    val server = printingApp.asServer(SunHttp(3000)).start()
-    val client = Client(app)
+    val server = printingApp.asServer(SunHttp(9000)).start()
+
+
 //     client.hello()
-    println(client.hello(name="Bruce"))
+//    println(client.sayHello(name="Bruce"))
 
 
     println("Server started on " + server.port())
