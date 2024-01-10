@@ -7,22 +7,21 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 class HelloClientTest {
+    val testClient = HelloClient("http://localhost:9000")
 
         @Test
         fun `hello method with no parameters, returns 'Hello'`() {
-            val testClient = HelloClient("http://localhost:9000")
             val expected: String = "Hello"
             val actual: String = testClient.sayHello()
-
             assertEquals(expected, actual)
         }
 
-//        @Test
-//        fun `hello method with name parameter, returns 'Hello $name'`() {
-//            val client = HelloClient(client)
-//            val response = client.sayHello(name = "Kimmy")
-//            assertThat(response, hasBody("Hello Kimmy"))
-//        }
+        @Test
+        fun `hello method with name parameter, returns 'Hello $name'`() {
+            val expected: String = "Hello Kimmy"
+            val actual: String = testClient.sayHello(name="Kimmy")
+            assertEquals(expected, actual)
+        }
 //
 //        @Test
 //        fun `hello method with recognised language parameter, returns greeting in recognised language`() {
