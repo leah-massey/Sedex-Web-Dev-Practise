@@ -12,7 +12,6 @@ import org.http4k.routing.routes
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 
-
 val app: HttpHandler = routes(
     "/hello" bind GET to { req: Request ->
         val name: String? = req.query("name") //  query will look something like this: ?name=Jane
@@ -39,6 +38,7 @@ val app: HttpHandler = routes(
             Response(BAD_REQUEST).body("Invalid name")
         }
     },
+
     "/echo_headers" bind GET to {req: Request ->
         val headers: Headers = req.headers
         val headersAsStringList: String = headers.map{"${it.first}: ${it.second}"}.joinToString("\n")
@@ -66,13 +66,8 @@ val app: HttpHandler = routes(
 
 
 fun main() {
-    val printingApp: HttpHandler = PrintRequest().then(app)
+    val printingApp: HttpHandler = PrintRequest().then(app) // PrintRequest is a debugging filter. It will print the request to the console when a request is made
     val server = printingApp.asServer(SunHttp(9000)).start()
-
-
-//     client.hello()
-//    println(client.sayHello(name="Bruce"))
-
 
     println("Server started on " + server.port())
 }
