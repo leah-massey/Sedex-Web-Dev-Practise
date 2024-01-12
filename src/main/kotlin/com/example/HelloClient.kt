@@ -3,6 +3,7 @@ package com.example
 import org.http4k.client.JavaHttpClient
 import org.http4k.core.*
 import org.http4k.core.Method.GET
+import org.http4k.lens.Header
 
 class HelloClient(private val baseURL: String) {
     private val client: HttpHandler = JavaHttpClient() // establish a httpHandler for the client side
@@ -21,8 +22,6 @@ class HelloClient(private val baseURL: String) {
 
         // make request
         val response: Response = client(request)
-        println("this is response body")
-        println(response.bodyString())
 
         // convert response back to map and return it
         val regex: Regex = Regex("\"(.*?)\":\"(.*?)\"")
@@ -32,7 +31,6 @@ class HelloClient(private val baseURL: String) {
     }
 
     fun echoHeadersForNoJson(data: Map<String, String>): Map<String, String> {
-
 
         val dataAsList: List<Pair<String, String>> = data.toList()
 
@@ -53,7 +51,29 @@ class HelloClient(private val baseURL: String) {
         return responseBodyAsMap
     }
 
-    // 3 functions each
+    fun echoHeadersWithPrefix(data: Map<String, String>): Map<String, String> {
+
+        // convert data to list format
+        val dataAsList = data.toList()
+
+        // set up the request with prefix query
+        // add data list as headers
+        val request: Request = Request(GET, "${baseURL}/echo_headers?as_response_headers_with_prefix=X-Echo-").headers(dataAsList)
+
+        // make request and get headers
+        val responseHeaders: String = client(request).headers.toString()
+
+        //convert response back to map and return it
+        val regex = Regex("\\(([^,]+),\\s([^)]+)\\)")
+        val matches = regex.findAll(responseHeaders)
+
+        val responseHeaderAsMap: Map<String, String> = matches.associate {match ->
+            val key = match.groupValues[1]
+            val value = match.groupValues[2]
+            key to value
+        }
+        return responseHeaderAsMap
+    }
 
 }
 
@@ -61,10 +81,13 @@ fun main() {
     val baseUrl = "http://localhost:9000"
     val helloClient = HelloClient(baseUrl)
 
-//    println("First is res.body, second is actual")
-//    println(helloClient.echoHeadersForJson(mapOf("testkey" to "testvalue")))
+    println("Response for json supporting client")
+    println(helloClient.echoHeadersForJson(mapOf("testkey" to "testvalue")))
 
-    println("First is res.body, second is actual")
+    println("Response for non json supporting client")
     println(helloClient.echoHeadersForNoJson(mapOf("testkey" to "testvalue")))
+
+    println("Response for request with prefix query")
+    println(helloClient.echoHeadersWithPrefix(mapOf("testkey" to "testvalue")))
 
 }
