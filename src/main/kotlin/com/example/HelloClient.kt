@@ -6,13 +6,13 @@ import org.http4k.core.Method.GET
 import org.http4k.lens.Header
 
 class HelloClient(private val baseURL: String) {
-    private val client: HttpHandler = JavaHttpClient() // establish a httpHandler for the client side
+    private val client: HttpHandler = JavaHttpClient() // establish a httpHandler for the client variable so that it can take a request and return a response
     fun sayHello(name: String? = null, language: String = "en-US"): String =
+
         client(Request(GET, "${baseURL}/hello")
             .query("name", name)
             .header("Accept-language", language)
             ).bodyString()
-
     fun echoHeadersForJson(data: Map<String, String> ): Map<String, String> {
 
         val dataAsList: List<Pair<String, String?>> = data.toList()
@@ -29,7 +29,6 @@ class HelloClient(private val baseURL: String) {
         val responseBodyAsMap: Map<String, String> = matches.associate { it.groupValues[1] to it.groupValues[2] }
         return responseBodyAsMap
     }
-
     fun echoHeadersForNoJson(data: Map<String, String>): Map<String, String> {
 
         val dataAsList: List<Pair<String, String>> = data.toList()
@@ -50,7 +49,6 @@ class HelloClient(private val baseURL: String) {
 
         return responseBodyAsMap
     }
-
     fun echoHeadersWithPrefix(data: Map<String, String>): Map<String, String> {
 
         // convert data to list format
@@ -80,6 +78,8 @@ class HelloClient(private val baseURL: String) {
 fun main() {
     val baseUrl = "http://localhost:9000"
     val helloClient = HelloClient(baseUrl)
+
+    helloClient.sayHello()
 
     println("Response for json supporting client")
     println(helloClient.echoHeadersForJson(mapOf("testkey" to "testvalue")))
